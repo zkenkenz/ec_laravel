@@ -29,7 +29,7 @@
 @section('content')
 
 <div class="content">
-    <h1 style="text-align:center;font-size:30px;">商品一覧(test)</h1>
+    <h1 style="text-align:center;font-size:30px;">商品一覧(test)ssss</h1>
     <div class="wrapper">
         @foreach ($items as $item )
         <div class="product">
