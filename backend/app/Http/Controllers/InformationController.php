@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cart;
 use App\Models\Information;
 
 
@@ -18,9 +19,7 @@ class InformationController extends Controller
          * 購入手続き画面
          */
         $buyItem = $request->buyItem;
-        $buyItems = DB::table('carts')
-            ->where('created_at', $buyItem)
-            ->get();
+        $buyItems = Cart::where('created_at', $buyItem)->get();
 
         return view('information.userInformation', compact('buyItems'));
     }
@@ -41,9 +40,7 @@ class InformationController extends Controller
         $email = $request->email;
 
         $buyItem = $request->buyItem;
-        $buyItems = DB::table('carts')
-            ->where('created_at', $buyItem)
-            ->get();
+        $buyItems = Cart::where('created_at', $buyItem)->get();
         
         //バリデーション 
         $limit = 255;

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\item;
+use App\Models\Item;
+use App\Models\Information;
 use Illuminate\Support\Facades\DB;
 use Mockery\Matcher\Subset;
 
@@ -17,9 +18,7 @@ class AdminController extends Controller
 
 
         //itemsテーブルからデータ取得最新から
-        $items = DB::table('items')
-            ->orderBy('created_at', 'DESC')
-            ->paginate(7);
+        $items = Item::orderBy('created_at', 'DESC')->paginate(7);
         $message = "管理者商品登録・編集用";
         return view('admin.itemsList', compact('items', 'message'));
     }
@@ -53,9 +52,9 @@ class AdminController extends Controller
 
         foreach ($length as $lenge) {
             if (mb_strlen($lenge) > $limit) {
-                $items = DB::table('items')
-                    ->orderBy('created_at', 'DESC')
-                    ->paginate(7);
+                
+                $items = Item::orderBy('created_at', 'DESC')->paginate(7);
+
                 $message = "管理者商品登録・編集用";
                 return view('admin.itemsList', compact('items', 'message', 'errMsg'));
             }
@@ -158,9 +157,7 @@ class AdminController extends Controller
                 return redirect('admin');
             }
             //最新の情報が一番上にくるように表示
-            $items = DB::table('items')
-                ->orderBy('created_at', 'DESC')
-                ->paginate(7);
+            $items = Item::orderBy('created_at', 'DESC')->paginate(7);
 
             $message =  "新商品を登録しました";
             //二重送信防止対策
@@ -174,9 +171,7 @@ class AdminController extends Controller
                 ->delete();
             $message =  "商品を削除しました";
 
-            $items = DB::table('items')
-                ->orderBy('created_at', 'DESC')
-                ->paginate(7);
+            $items = Item::orderBy('created_at', 'DESC')->paginate(7);
 
             return view('admin.itemsList', compact('items', 'message'));
         } elseif (isset($request->itemEdit)) {
@@ -195,9 +190,8 @@ class AdminController extends Controller
 
             $message = "商品を編集しました";
 
-            $items = DB::table('items')
-                ->orderBy('created_at', 'DESC')
-                ->paginate(7);
+            $items = Item::orderBy('created_at', 'DESC')->paginate(7);
+
             return view('admin.itemsList', compact('items', 'message'));
         }
     }
@@ -210,9 +204,8 @@ class AdminController extends Controller
          * 購入者情報を表示
          */
 
-        $informations = DB::table('informations')->get();
-        $items = DB::table('items')
-            ->get();
+        $informations = Information::get();
+        $items = Item::get();
         return view('admin.information', compact('informations', 'items'));
     }
 
@@ -228,13 +221,10 @@ class AdminController extends Controller
         $userInformation = $request->informationCreate_at;
         
 
-        $userInformations = DB::table('informations')
-            ->where('created_at', $userInformation)
-            ->get();
+        $userInformations = Information::where('created_at', $userInformation)->get();
 
-        $items = DB::table('items')
-            ->get();
-
+        $items = Item::get();
+        
         return view('admin.detail', compact('userInformations', 'items'));
     }
 }

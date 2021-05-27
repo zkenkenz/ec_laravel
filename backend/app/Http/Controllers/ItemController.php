@@ -6,6 +6,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cart;
+use App\Models\Item;
 
 
 
@@ -24,7 +25,7 @@ class ItemController extends Controller
 
         //6商品ごとにページネーション
         //$items = Item::Paginate(6);
-        $items = DB::table('items')->paginate(6);
+        $items = Item::paginate(6);
 
         DB::table('carts')
             ->truncate();
@@ -45,7 +46,7 @@ class ItemController extends Controller
 
         //6商品ごとにページネーション
         //$items = Item::Paginate(6);
-        $items = DB::table('items')->paginate(6);
+        $items = Item::paginate(6);
 
         return view('items.index', compact('items'));
     }
@@ -58,9 +59,7 @@ class ItemController extends Controller
          */
 
         $itemId=$request->itemId;
-        $itemDetails = DB::table('items')
-            ->where('id', $itemId)
-            ->first();
+        $itemDetails = Item::where('id', $itemId)->first();
 
         return view('items.itemDetail', compact('itemDetails'));
     }
@@ -106,7 +105,7 @@ class ItemController extends Controller
         if (!isset($message)) {
             $message = "カートの中身";
         }
-        $carts = DB::table('carts')->get();
+        $carts = Cart::get();
 
         return view('mycarts.index', compact('carts', 'message'));
     }
@@ -122,15 +121,12 @@ class ItemController extends Controller
 
         //検索結果で何か（keywordが）送られてきたら
         if (isset($keyword)) {
-            $results = DB::table('items')
-                ->where('name', 'like', '%' . $keyword . '%')
-                ->orWhere('detail', 'like', '%' . $keyword . '%')
-                ->paginate(6);
+            $results = Item::where('name', 'like', '%' . $keyword . '%')->orWhere('detail', 'like', '%' . $keyword . '%')->paginate(6);
 
             return view('items.search', compact('results'));
         }elseif(!isset($keyword)){
             
-            $items= DB::table('items')->paginate(10);
+            $items= Item::paginate(10);
             
             return view('items.index',compact('items'));
         }
